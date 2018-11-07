@@ -1,0 +1,6 @@
+include README.md
+include LICENSE.md
+include example.png
+include requirements.txt
+recursive-include dj_field_filemanager/static *
+recursive-include dj_field_filemanager/templates *
