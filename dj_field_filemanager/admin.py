@@ -1,12 +1,11 @@
 from django import forms
-from django.contrib import admin
 
 from . import settings
 from .models import DocumentModel
 from .widgets import FieldFilemanagerWidget
 
 
-class FieldFilemanagerAdmin(admin.ModelAdmin):
+class FieldFilemanagerAdmin:
     FIELD_FILEMANAGER_CSS = (
         'field-filemanager/field-filemanager-0.1.0/filemanager.css',
         'field-filemanager/field-filemanager-0.1.0.css',

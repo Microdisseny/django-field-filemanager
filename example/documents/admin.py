@@ -7,6 +7,11 @@ from dj_field_filemanager.admin import FieldFilemanagerAdmin
 from .models import Document, Folder, Project
 
 
+class FolderInline(FieldFilemanagerAdmin, admin.StackedInline):
+    model = Folder
+    extra = 0
+
+
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     """
@@ -14,6 +19,7 @@ class ProjectAdmin(admin.ModelAdmin):
     """
     list_display = ('id', 'name',)
     list_display_links = ('id', 'name',)
+    inlines = [FolderInline]
 
 
 @admin.register(Folder)
