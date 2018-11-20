@@ -49,8 +49,9 @@ class FieldFilemanagerAdmin(admin.ModelAdmin):
                 self.filemanager_fields.append(filemanager_field)
 
     def get_readonly_fields(self, request, obj=None):
-        readonly_fields = super().get_readonly_fields(request, obj)
-        return readonly_fields + tuple(self.filemanager_fields)
+        readonly_fields = list(super().get_readonly_fields(request, obj))
+        readonly_fields.extend(self.filemanager_fields)
+        return readonly_fields
 
     @property
     def media(self):
