@@ -52,6 +52,11 @@ class FieldFilemanagerAdmin:
         readonly_fields.extend(self.filemanager_fields)
         return readonly_fields
 
+    def get_fields(self, request, obj=None):
+        fields = list(super().get_fields(request, obj))
+        fields.extend(self.filemanager_fields)
+        return list(set(fields))
+
     @property
     def media(self):
         css = super().media._css

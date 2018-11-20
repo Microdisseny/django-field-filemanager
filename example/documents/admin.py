@@ -10,6 +10,7 @@ from .models import Document, Folder, Project
 class FolderInline(FieldFilemanagerAdmin, admin.StackedInline):
     model = Folder
     extra = 0
+    fields = ('id', 'name',)
 
 
 @admin.register(Project)
