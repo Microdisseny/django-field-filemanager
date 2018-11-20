@@ -21,6 +21,13 @@ def _upload_to(instance, filename):
 
 
 class DocumentModel(models.Model):
+    ALLOWED_IMAGE_FORMATS = ('JPEG', 'PNG')
+    EXTENSIONS = {
+        'JPEG': 'jpg',
+        'PNG': 'png',
+    }
+    PNG_SUPPORTED_MODES = ('1', 'L', 'RGB', 'RGBA')
+
     # Parent attribute name
     document_parent = None
     width = None
@@ -108,38 +115,62 @@ class DocumentModel(models.Model):
     def get_thumbnail_width(self):
         return self.width or settings.FIELD_FILEMANAGER_WIDTH
 
-    def save_thumbnail(self):
+    def save_thumbnail(self, save=True):
         """
         Generates a document thumbnail
         """
-        instance = self
-        buffer = None
+        modified = False
+        if self.thumbnail:
+            self.thumbnail.delete(save=False)
+            modified = True
+
         im = None
-        if instance.thumbnail:
-            instance.thumbnail.delete()
-        if instance.file.name.lower().endswith('.pdf'):
-            file = instance.file
+        format = None
+        if not self.file:
+            pass
+        elif self.file.name.lower().endswith('.pdf'):
+            file = self.file
+            file.open()
             images = pdf2image.convert_from_bytes(file.read(), first_page=1, last_page=1)
             if len(images) > 0:
-                buffer = io.BytesIO()
-                images[0].save(buffer, format='JPEG')
-        if not(buffer is None):
-            im = Image.open(buffer)
+                im = images[0]
+                format = 'JPEG'
         else:
             try:
-                im = Image.open(instance.file)
+                im = Image.open(self.file)
+                # Keep the same format if it's OK for us
+                if im.format in self.ALLOWED_IMAGE_FORMATS:
+                    format = im.format
+                else:
+                    # Convert it into PNG
+                    if im.mode not in self.PNG_SUPPORTED_MODES:
+                        # Force a valid PNG mode (RGB)
+                        im = im.convert('RGBA')
+                    format = 'PNG'
             except Exception:
-                pass
+                # not an image or unsupported
+                im = None
+
         if im:
-            size = (instance.get_thumbnail_width(), instance.get_thumbnail_height())
+            # generate thumbnail
+            size = (self.get_thumbnail_width(), self.get_thumbnail_height())
             im.thumbnail(size, Image.ANTIALIAS)
             buffer = io.BytesIO()
-            im.save(buffer, 'JPEG')
+            im.save(buffer, format=format)
+
+            # save thumbnail
             buffer.seek(0)
             bytes = buffer.read()
-            filename = '%s.jpg' % uuid.uuid4()
-            instance.thumbnail.save(name=filename, content=ContentFile(bytes))
-            instance.save()
+            if format in self.EXTENSIONS:
+                extension = self.EXTENSIONS[format]
+            else:
+                extension = format.lower()
+            filename = '%s.%s' % (uuid.uuid4(), extension)
+            self.thumbnail.save(name=filename, content=ContentFile(bytes))
+            modified = True
+
+        if modified and save:
+            self.save()
 
     def thumbnail_upload_to(self, filename):
         """

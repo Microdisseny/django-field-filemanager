@@ -36,7 +36,7 @@ class ApiDocumentsTests(APITestCase):
         self.folder = Folder(**{'name': 'Images'})
         self.folder.save()
 
-        files = ['2210571.jpg', 'images.docx']
+        files = ['2210571.jpg', 'images.docx', 'rgba1px.png']
         for file in files:
             path = 'tests/files/%s' % file
             f = open(path, 'rb')
@@ -51,7 +51,7 @@ class ApiDocumentsTests(APITestCase):
         url = reverse('file_upload_view_list', args=['documents.Document', 'folder', self.folder.pk])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data), len(files))
 
         url = reverse('file_upload_view_detail', args=['documents.Document', 'folder', self.folder.pk, files[0]])
         response = self.client.get(url)
