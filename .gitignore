@@ -14,8 +14,8 @@ devel.env
 pylama.ini
 dj_field_filemanager.egg-info
 upload_new_version.sh
-dj_field_filemanager/static/field-filemanager/field-filemanager-0.1.0/demo.html
-dj_field_filemanager/static/field-filemanager/field-filemanager-0.1.0/filemanager.umd.js
-dj_field_filemanager/static/field-filemanager/field-filemanager-0.1.0/filemanager.common.js
-dj_field_filemanager/static/field-filemanager/field-filemanager-0.1.0/filemanager.umd.js.map
-dj_field_filemanager/static/field-filemanager/field-filemanager-0.1.0/filemanager.common.js.map
+dj_field_filemanager/static/field-filemanager/field-filemanager-*/demo.html
+dj_field_filemanager/static/field-filemanager/field-filemanager-*/filemanager.umd.js
+dj_field_filemanager/static/field-filemanager/field-filemanager-*/filemanager.common.js
+dj_field_filemanager/static/field-filemanager/field-filemanager-*/filemanager.umd.js.map
+dj_field_filemanager/static/field-filemanager/field-filemanager-*/filemanager.common.js.map

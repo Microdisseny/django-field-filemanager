@@ -7,12 +7,12 @@ from .widgets import FieldFilemanagerWidget
 
 class FieldFilemanagerAdmin:
     FIELD_FILEMANAGER_CSS = (
-        'field-filemanager/field-filemanager-0.1.0/filemanager.css',
-        'field-filemanager/field-filemanager-0.1.0.css',
+        'field-filemanager/field-filemanager-0.1.2/filemanager.css',
+        'field-filemanager/field-filemanager-0.1.2.css',
         )
     FIELD_FILEMANAGER_JS = (
-        'field-filemanager/field-filemanager-0.1.0/filemanager.umd.min.js',
-        'field-filemanager/field-filemanager-0.1.0-init.js',
+        'field-filemanager/field-filemanager-0.1.2/filemanager.umd.min.js',
+        'field-filemanager/field-filemanager-0.1.2-init.js',
         )
 
     def __init__(self, *args, **kwargs):

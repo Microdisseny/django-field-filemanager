@@ -24,7 +24,7 @@ var attach_filemanager = function(selector){
   new Vue({
       el: selector,
       components: {
-        FileManager,
+        filemanager: FileManager
       }
   });
 }
