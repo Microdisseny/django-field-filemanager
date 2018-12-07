@@ -1,44 +1,22 @@
 from urllib.parse import unquote
 
 from django.apps import apps
-from django.conf import settings
-from django.contrib.auth import get_permission_codename
+from django.conf import settings as django_settings
 
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.parsers import MultiPartParser
-from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
 from .serializers import create_serializer
-
-
-class HasPermission(BasePermission):
-    def has_permission(self, request, view):
-        permissions = {
-            'list': 'view',
-            'create': 'add',
-            'retrieve': 'view',
-            # 'update': 'change',
-            # 'partial_update': 'change',
-            'destroy': 'delete'
-        }
-        if view.action not in permissions:
-            return False
-        permission = permissions[view.action]
-
-        opts = type('', (), {})()
-        opts.app_label = view.model._meta.app_label
-        opts.model_name = view.model._meta.model_name
-        codename = get_permission_codename(permission, opts)
-        return request.user.has_perm("%s.%s" % (opts.app_label, codename))
+from . import settings
 
 
 class FileViewSet(ViewSet):
     serializer_class = None
     parser_classes = (MultiPartParser,)
-    permission_classes = (HasPermission,)
+    permission_classes = settings.FIELD_FILEMANAGER_API_PERMISSIONS
     authentication_classes = (SessionAuthentication,)
 
     def get_model_class(self, model):
@@ -90,13 +68,13 @@ class FileViewSet(ViewSet):
             try:
                 instance = serializer.save()
             except Exception:
-                if settings.DEBUG:
+                if django_settings.DEBUG:
                     raise
             if instance:
                 try:
                     instance.save_thumbnail()
                 except Exception as e:
-                    if settings.DEBUG:
+                    if django_settings.DEBUG:
                         raise
                     else:
                         print(e)
