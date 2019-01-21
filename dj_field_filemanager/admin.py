@@ -54,8 +54,10 @@ class FieldFilemanagerAdmin:
 
     def get_fields(self, request, obj=None):
         fields = list(super().get_fields(request, obj))
-        fields.extend(self.filemanager_fields)
-        return list(set(fields))
+        for field in self.filemanager_fields:
+            if field not in fields:
+                fields.append(field)
+        return fields
 
     @property
     def media(self):
