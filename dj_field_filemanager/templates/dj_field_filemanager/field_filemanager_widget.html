@@ -2,7 +2,7 @@
 {% if widget.attrs.parent_pk %}
 <div id="filemanager_{{ widget.attrs.model|slugify }}_{{ widget.attrs.parent }}_{{ widget.attrs.parent_pk }}" class="filemanager_component">
     {% if num_fields > 0 %}<h2>{{ filemanager_field.model }}</h2>{% endif %}
-  <filemanager api-url="{% url 'file_upload_view_list' widget.attrs.model widget.attrs.parent widget.attrs.parent_pk %}">
+  <filemanager api-url="{% url 'model_view_list' widget.attrs.model widget.attrs.parent widget.attrs.parent_pk %}">
     <template slot="dropAreaTitle">{% trans 'Upload file' %}</template>
   </filemanager>
 </div>

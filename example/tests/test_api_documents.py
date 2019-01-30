@@ -48,18 +48,18 @@ class ApiDocumentsTests(APITestCase):
             document.save_thumbnail()
             f.close()
 
-        url = reverse('file_upload_view_list', args=['documents.Document', 'folder', self.folder.pk])
+        url = reverse('model_view_list', args=['documents.Document', 'folder', self.folder.pk])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), len(files))
 
-        url = reverse('file_upload_view_detail', args=['documents.Document', 'folder', self.folder.pk, files[0]])
+        url = reverse('model_view_detail', args=['documents.Document', 'folder', self.folder.pk, files[0]])
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['name'], files[0])
 
     def test_post_image(self):
-        url = reverse('file_upload_view_list', args=['documents.Document', 'folder', self.folder.pk])
+        url = reverse('model_view_list', args=['documents.Document', 'folder', self.folder.pk])
         path = 'tests/files/2210571.jpg'
         f = open(path, 'rb')
         data = {'file': f, 'folder': self.folder.pk}
@@ -74,7 +74,7 @@ class ApiDocumentsTests(APITestCase):
             response.data['thumbnail'] is None)
 
     def test_post_pdf(self):
-        url = reverse('file_upload_view_list', args=['documents.Document', 'folder', self.folder.pk])
+        url = reverse('model_view_list', args=['documents.Document', 'folder', self.folder.pk])
         path = 'tests/files/sample.pdf'
         f = open(path, 'rb')
         data = {'file': f, 'folder': self.folder.pk}
@@ -90,7 +90,7 @@ class ApiDocumentsTests(APITestCase):
 
     def test_delete(self):
         name = '2210571.jpg'
-        url = reverse('file_upload_view_detail', args=['documents.Document', 'folder', self.folder.pk, name])
+        url = reverse('model_view_detail', args=['documents.Document', 'folder', self.folder.pk, name])
         path = 'tests/files/%s' % name
         f = open(path, 'rb')
         document = Document()

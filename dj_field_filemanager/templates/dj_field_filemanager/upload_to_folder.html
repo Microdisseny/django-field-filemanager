@@ -1,0 +1,12 @@
+{% load i18n static %}
+{% for item in css %}
+<link rel="stylesheet" type="text/css" href="{% static  item %}" />
+{% endfor %}
+{% for item in js %}
+<script type="text/javascript" src="{% static item %}"></script>
+{% endfor %}
+<div id="filemanager_{{ code }}" class="filemanager_component">
+  <filemanager api-url="{% url 'storage_view_list' code %}">
+    <template slot="dropAreaTitle">{% trans 'Upload file' %}</template>
+  </filemanager>
+</div>

@@ -1,0 +1,28 @@
+{% extends "admin/index.html" %}
+
+{% block sidebar %}
+    {{block.super}}
+
+
+    <div style="float: left; width: 100%;">
+    <div class="module">
+
+            <table style="width: 100%;">
+            <caption>
+                <a href="#" class="section"
+                    title="Enlaces">Examples</a>
+            </caption>
+                <tbody>
+                <tr>
+                        <td>
+                            <a href="{% url 'upload_to_folder_example' %}" class="">
+                                Upload to folder example
+                            </a>
+                        </td>
+                </tr>
+
+        </table>
+            </div>
+        </div>
+
+{% endblock %}

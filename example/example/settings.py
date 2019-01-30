@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/2.1/ref/settings/
 
 import os
 
+APP_URL = ''
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -33,6 +35,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'dj_field_filemanager',
     'documents',
+    'example',
 
     'rest_framework',
     'corsheaders',
@@ -127,6 +130,19 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # corsheaders
 CORS_ORIGIN_ALLOW_ALL = True
 
+FIELD_FILEMANAGER_STORAGE_CONFIG = [
+    {
+        'code': 'storage_file_example',
+        'path': os.path.join(MEDIA_ROOT, 'storage_file_example'),
+        'url': os.path.join(MEDIA_URL, 'storage_file_example'),
+        'thumbnail': {
+            'path': os.path.join(MEDIA_ROOT, 'storage_file_thumbnails_example'),
+            'url': os.path.join(MEDIA_URL, 'storage_file_thumbnails_example'),
+            'width': 250,
+            'height': 250
+        }
+    }
+]
 
 # Overwrite settings using ENVIRONMENT_NAME
 ENVIRONMENT_NAME = os.environ.get('ENVIRONMENT_NAME', '')

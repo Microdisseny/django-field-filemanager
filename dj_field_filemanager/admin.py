@@ -1,19 +1,19 @@
 from django import forms
 
-from . import settings
+from . import __version__, settings
 from .models import DocumentModel
 from .widgets import FieldFilemanagerWidget
 
 
 class FieldFilemanagerAdmin:
-    FIELD_FILEMANAGER_CSS = (
-        'field-filemanager/field-filemanager-0.1.6/filemanager.css',
-        'field-filemanager/field-filemanager-0.1.6.css',
-        )
-    FIELD_FILEMANAGER_JS = (
-        'field-filemanager/field-filemanager-0.1.6/filemanager.umd.min.js',
-        'field-filemanager/field-filemanager-0.1.6-init.js',
-        )
+    FIELD_FILEMANAGER_CSS = [
+        'field-filemanager/field-filemanager-%s/filemanager.css' % __version__,
+        'field-filemanager/field-filemanager-%s.css' % __version__,
+        ]
+    FIELD_FILEMANAGER_JS = [
+        'field-filemanager/field-filemanager-%s/filemanager.umd.min.js' % __version__,
+        'field-filemanager/field-filemanager-%s-init.js' % __version__,
+        ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
