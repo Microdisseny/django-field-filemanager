@@ -1,4 +1,4 @@
-FROM microdisseny/py3-development-selenium
+FROM microdisseny/py3-development
 
 ENV PACKAGES 'poppler-utils'
 
