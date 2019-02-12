@@ -1,6 +1,6 @@
 try:
     from django.urls import re_path
-except Exception:
+except ImportError:  # Django<2.0
     from django.conf.urls import url as re_path
 
 from .api import ModelViewSet, StorageViewSet

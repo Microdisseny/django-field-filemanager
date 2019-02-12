@@ -16,14 +16,24 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path
+
+try:
+    from django.urls import include
+except ImportError:  # Django<2.0
+    from django.conf.urls import include
+
+try:
+    from django.urls import re_path
+except ImportError:  # Django<2.0
+    from django.conf.urls import url as re_path
+
 from django.views.generic import TemplateView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('dj_field_filemanager/', include('dj_field_filemanager.urls')),
-    path('upload_to_folder/', TemplateView.as_view(template_name="upload_to_folder.html"),
-         name='upload_to_folder_example'),
+    re_path(r'^admin/', admin.site.urls),
+    re_path(r'^dj_field_filemanager/', include('dj_field_filemanager.urls')),
+    re_path(r'^upload_to_folder/', TemplateView.as_view(template_name="upload_to_folder.html"),
+            name='upload_to_folder_example'),
 ]
 
 urlpatterns += static('media', document_root=settings.MEDIA_ROOT)
