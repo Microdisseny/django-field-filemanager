@@ -2,7 +2,7 @@ from distutils.core import setup
 
 from setuptools import find_packages
 
-VERSION = '0.2.1'
+VERSION = '0.2.2'
 
 CLASSIFIERS = [
     'Framework :: Django',
@@ -39,7 +39,7 @@ setup(
     author_email='tech@microdisseny.com',
     license='MIT License',
     platforms=['OS Independent'],
-    url='https://bitbucket.com/microdisseny/django-field-filemanager',
+    url='https://github.com/Microdisseny/django-field-filemanager',
     packages=find_packages(exclude=['__pycache__']),
     include_package_data=True,
     classifiers=CLASSIFIERS,
