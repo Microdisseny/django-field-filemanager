@@ -7,6 +7,6 @@
 {% endfor %}
 <div id="filemanager_{{ code }}" class="filemanager_component">
   <filemanager api-url="{% url 'storage_view_list' code %}">
-    <template slot="dropAreaTitle">{% trans 'Upload file' %}</template>
+    <template slot="dropAreaTitle"><h3>{% trans 'Upload file' %}</h3></template>
   </filemanager>
 </div>
