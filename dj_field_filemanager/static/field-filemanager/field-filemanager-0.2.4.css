@@ -1,0 +1,33 @@
+.inline-related.inline-related [data-field-filemanager-style] h3,
+.inline-related.inline-related [data-field-filemanager-style] label,
+[data-field-filemanager-style] h3,
+[data-field-filemanager-style] label {
+  color: initial;
+  padding: initial;
+  margin: initial;
+  background: initial;
+  font-size: initial;
+  font-weight: initial;
+  text-align: initial;
+  float: initial;
+  border: initial;
+  width: initial;
+}
+
+.inline-related.inline-related [data-field-filemanager-style] .col2 h3,
+[data-field-filemanager-style] .col2 h3 {
+  margin-top: 5px;
+  text-align: center;
+}
+
+.inline-related.inline-related [data-field-filemanager-style] .col3 label,
+[data-field-filemanager-style] .col3 label {
+  text-align: right;
+}
+
+.inline-related.inline-related [data-field-filemanager-style] .upload-button-icon {
+  width: 32px;
+  height: 32px;
+  margin-right: 10px;
+  margin-top: 10px;
+}
