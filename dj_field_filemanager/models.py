@@ -10,7 +10,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 import pdf2image
-from PIL import Image
+from PIL import Image, ImageOps
 
 from . import settings
 
@@ -51,6 +51,7 @@ class ThumbnailMixin:
     def _thumbnail_save(self):
         im = None
         format = None
+        file = None
         if self.get_file_name().lower().endswith('.pdf'):
             file = self.open_file()
             images = pdf2image.convert_from_bytes(file.read(), first_page=1, last_page=1)
@@ -77,6 +78,10 @@ class ThumbnailMixin:
 
         if im:
             # generate thumbnail
+            try:
+                im = ImageOps.exif_transpose(im)
+            except Exception:
+                pass
             size = (self.get_thumbnail_width(), self.get_thumbnail_height())
             im.thumbnail(size, Image.ANTIALIAS)
             buffer = io.BytesIO()
@@ -84,6 +89,8 @@ class ThumbnailMixin:
 
             buffer.seek(0)
             bytes = buffer.read()
+            if file and not file.closed:
+                file.close()
             if format in self.EXTENSIONS:
                 extension = self.EXTENSIONS[format]
             else:
