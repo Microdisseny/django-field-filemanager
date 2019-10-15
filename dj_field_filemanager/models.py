@@ -195,7 +195,6 @@ class DocumentModel(models.Model, ThumbnailMixin):
         if self.thumbnail:
             self.thumbnail.delete(save=False)
             modified = True
-            self.delete_thumbnail()
 
         result = self._thumbnail_save()
         if result:
