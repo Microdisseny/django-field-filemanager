@@ -28,6 +28,7 @@ def _upload_to(instance, filename):
 
 class ThumbnailMixin:
     ALLOWED_IMAGE_FORMATS = ('JPEG', 'PNG')
+    ALLOWED_IMAGE_EXTENSIONS = ('.jpeg', '.jpg', '.jpg')
     EXTENSIONS = {
         'JPEG': 'jpg',
         'PNG': 'png',
@@ -52,13 +53,18 @@ class ThumbnailMixin:
         im = None
         format = None
         file = None
-        if self.get_file_name().lower().endswith('.pdf'):
+        try:
+            _, ext = os.path.splitext(self.get_file_name())
+            ext = ext.lower()
+        except Exception:
+            return
+        if ext == '.pdf':
             file = self.open_file()
             images = pdf2image.convert_from_bytes(file.read(), first_page=1, last_page=1)
             if len(images) > 0:
                 im = images[0]
                 format = 'JPEG'
-        else:
+        elif ext in self.ALLOWED_IMAGE_EXTENSIONS:
             try:
                 file = self.open_file()
                 im = Image.open(file)
