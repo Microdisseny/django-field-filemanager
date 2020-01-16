@@ -22,6 +22,7 @@ FIELD_FILEMANAGER_HEIGHT = getattr(settings, 'FIELD_FILEMANAGER_HEIGHT', 240)
 MEDIA_ROOT = getattr(settings, 'MEDIA_ROOT')
 
 FIELD_FILEMANAGER_USE_VUE_JS = getattr(settings, 'FIELD_FILEMANAGER_USE_VUE_JS', True)
+FIELD_FILEMANAGER_VUEJS_FILE = getattr(settings, 'VUEJS_FILE', 'field-filemanager/vue-2.6.10.min.js')
 
 FIELD_FILEMANAGER_STORAGE = get_cls('FIELD_FILEMANAGER_STORAGE', OverwriteStorage)
 
