@@ -67,6 +67,6 @@ class FieldFilemanagerAdmin:
         css['all'].extend(self.FIELD_FILEMANAGER_CSS)
         js = super().media._js
         if settings.FIELD_FILEMANAGER_USE_VUE_JS:
-            js.append('field-filemanager/vue-2.6.10.min.js')
+            js.append(settings.FIELD_FILEMANAGER_VUEJS_FILE)
         js += self.FIELD_FILEMANAGER_JS
         return forms.Media(css=css, js=js)

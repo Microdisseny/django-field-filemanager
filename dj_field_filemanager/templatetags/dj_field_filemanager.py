@@ -16,7 +16,7 @@ def upload_to_folder(context, code):
         'field-filemanager/field-filemanager-%s-init.js' % __version__,
         ]
     if settings.FIELD_FILEMANAGER_USE_VUE_JS:
-        js.append('field-filemanager/vue-2.5.17.min.js')
+        js.append(settings.FIELD_FILEMANAGER_VUEJS_FILE)
 
     return {
         'css': css,
