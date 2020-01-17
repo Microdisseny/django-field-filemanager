@@ -1,9 +1,14 @@
 import logging
+import mimetypes
 import os
 
 from django.conf import settings as django_settings
+from django.http import FileResponse, Http404
+from django.utils.cache import patch_response_headers
 
-from rest_framework import status
+
+from rest_framework import renderers, status
+
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
@@ -16,11 +21,26 @@ from dj_field_filemanager.serializers import StorageSerializer
 logger = logging.getLogger(__name__)
 
 
+class RawRenderer(renderers.BaseRenderer):
+    media_type = 'application/octet-stream'
+    format = 'raw'
+    render_style = 'binary'
+
+    def render(self, data, media_type=None, renderer_context=None):
+        return data
+
+
 class StorageViewSet(ViewSet):
     serializer_class = StorageSerializer
     parser_classes = (MultiPartParser,)
     permission_classes = settings.FIELD_FILEMANAGER_STORAGE_PERMISSIONS
     authentication_classes = (SessionAuthentication,)
+
+    def get_renderers(self):
+        renderers = super().get_renderers()
+        if self.action == 'retrieve':
+            renderers += [RawRenderer()]
+        return renderers
 
     def create(self, request):
         storage = self.model.get_storage()
@@ -113,10 +133,18 @@ class StorageViewSet(ViewSet):
             items, many=True, context={'request': request})
         return Response(serializer.data)
 
-    def retrieve(self, request, pk, *args, **kwargs):
+    def retrieve(self, request, pk, format=None, *args, **kwargs):
         obj = self.model.get_object(os.path.basename(pk))
         if not obj:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+            raise Http404('Does not exist')
+
+        if request.accepted_renderer.format == 'raw':
+            fd = self.model.get_storage().open(obj.name)
+            file_mime = mimetypes.guess_type(obj.name.split('/')[-1])
+            response = FileResponse(fd, content_type=file_mime)
+            patch_response_headers(response, cache_timeout=60 * 60 * 24 * 7)
+            return response
+
         serializer = self.get_serializer(
             obj, context={'request': request})
         return Response(serializer.data)

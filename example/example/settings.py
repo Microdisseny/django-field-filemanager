@@ -141,6 +141,10 @@ FIELD_FILEMANAGER_STORAGE_CONFIG = [
             'width': 250,
             'height': 250
         }
+    },
+    {
+        'code': 'storage_file_example_nothumbnail',
+        'path': os.path.join(MEDIA_ROOT, 'storage_file_example_nothumbnail')
     }
 ]
 

@@ -267,9 +267,6 @@ class StorageFileModelBase(ThumbnailMixin):
         if 'path' not in config:
             raise Exception('missing path attribute')
         args['location'] = config['path']
-        if 'url' not in config:
-            raise Exception('missing url attribute')
-        args['base_url'] = config['url']
         if 'extra' in config:
             args.update(config['extra'])
         p, m = storage_type.rsplit('.', 1)
@@ -293,9 +290,9 @@ class StorageFileModelBase(ThumbnailMixin):
 
     @classmethod
     def get_thumbnail(cls, file_name):
-        if cls.get_storage().exists(file_name):
+        storage_thumbnail = cls.get_thumbnail_storage()
+        if storage_thumbnail and cls.get_storage().exists(file_name):
             extensions = list(cls.EXTENSIONS.values())
-            storage_thumbnail = cls.get_thumbnail_storage()
             for e in extensions:
                 thumbnail_name = '%s.thumbnail.%s' % (file_name, e)
                 if storage_thumbnail.exists(thumbnail_name):

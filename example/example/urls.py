@@ -34,6 +34,8 @@ urlpatterns = [
     re_path(r'^dj_field_filemanager/', include('dj_field_filemanager.urls')),
     re_path(r'^upload_to_folder/', TemplateView.as_view(template_name="upload_to_folder.html"),
             name='upload_to_folder_example'),
+    re_path(r'^upload_to_folder_nothumbnail/', TemplateView.as_view(template_name="upload_to_folder_nothumbnail.html"),
+            name='upload_to_folder_example_nothumbnail'),
 ]
 
 urlpatterns += static('media', document_root=settings.MEDIA_ROOT)

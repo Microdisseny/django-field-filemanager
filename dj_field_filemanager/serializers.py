@@ -1,5 +1,7 @@
 import os
 
+from django.urls import reverse
+
 from rest_framework import serializers
 
 
@@ -37,9 +39,13 @@ class StorageSerializer(serializers.Serializer):
 
     def to_representation(self, obj):
         data = super().to_representation(obj)
-        url = self.context['request'].build_absolute_uri(
-            self.storage.url(data['name']))
-        data['file'] = url
+        url = None
+        if not('url' in self.model.storage_config):
+            url = '%s?format=raw' % reverse(
+                'storage_view_detail', args=[self.model.storage_config['code'], data['name']])
+        else:
+            url = self.storage.url(data['name'])
+        data['file'] = self.context['request'].build_absolute_uri(url)
         if obj.thumbnail:
             thumbnail_name = os.path.basename(obj.thumbnail)
             url = self.context['request'].build_absolute_uri(
