@@ -296,10 +296,11 @@ class StorageFileModelBase(ThumbnailMixin):
         if cls.get_storage().exists(file_name):
             extensions = list(cls.EXTENSIONS.values())
             storage_thumbnail = cls.get_thumbnail_storage()
-            for e in extensions:
-                thumbnail_name = '%s.thumbnail.%s' % (file_name, e)
-                if storage_thumbnail.exists(thumbnail_name):
-                    return storage_thumbnail.path(thumbnail_name)
+            if storage_thumbnail:
+                for e in extensions:
+                    thumbnail_name = '%s.thumbnail.%s' % (file_name, e)
+                    if storage_thumbnail.exists(thumbnail_name):
+                        return storage_thumbnail.path(thumbnail_name)
 
     def get_thumbnail_height(self):
         if 'height' in self.storage_config['thumbnail']:
