@@ -134,10 +134,10 @@ FIELD_FILEMANAGER_STORAGE_CONFIG = [
     {
         'code': 'storage_file_example',
         'path': os.path.join(MEDIA_ROOT, 'storage_file_example'),
-        'url': os.path.join(MEDIA_URL, 'storage_file_example'),
+        # 'url': os.path.join(MEDIA_URL, 'storage_file_example'),
         'thumbnail': {
             'path': os.path.join(MEDIA_ROOT, 'storage_file_thumbnails_example'),
-            'url': os.path.join(MEDIA_URL, 'storage_file_thumbnails_example'),
+            # 'url': os.path.join(MEDIA_URL, 'storage_file_thumbnails_example'),
             'width': 250,
             'height': 250
         }
