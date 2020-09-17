@@ -12,7 +12,6 @@ env:
   global:
     - ENVIRONMENT_NAME: test
   matrix:
-    - DJANGO_VERSION=django111
     - DJANGO_VERSION=django20
     - DJANGO_VERSION=django21
 
