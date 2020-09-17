@@ -3,11 +3,13 @@ import logging
 import os
 import uuid
 from importlib import import_module
+from urllib.parse import urljoin
 
 from django.conf import settings as django_settings
 from django.core.files.base import ContentFile
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.urls import reverse
 
 import pdf2image
 from PIL import Image, ImageOps
@@ -105,7 +107,7 @@ class ThumbnailMixin:
             return bytes, extension
 
 
-class DocumentModel(models.Model, ThumbnailMixin):
+class DocumentModel(ThumbnailMixin, models.Model, ):
     # Parent attribute name
     document_parent = None
 
@@ -228,6 +230,24 @@ class DocumentModel(models.Model, ThumbnailMixin):
         base_path = self.base_upload_to()
         return '%s/%s/%s' % (base_path, 'filemanager', filename)
 
+    def file_url(self, request=None):
+        if self.file:
+            label, model, parent_pk, field, _, file = self.file.name.split('/')
+            name = 'filemanager_model_url'
+            url = reverse(name, args=(label, model, parent_pk, field, file))
+            if request:
+                url = request.build_absolute_uri(url)
+            return url
+
+    def thumbnail_url(self, request=None):
+        if self.thumbnail:
+            label, model, parent_pk, field, _, file = self.thumbnail.name.split('/')
+            name = 'filemanager_model_thumbnail_url'
+            url = reverse(name, args=(label, model, parent_pk, field, file))
+            if request:
+                url = request.build_absolute_uri(url)
+            return url
+
     class Meta:
         abstract = True
 
@@ -269,9 +289,9 @@ class StorageFileModelBase(ThumbnailMixin):
         if 'path' not in config:
             raise Exception('missing path attribute')
         args['location'] = config['path']
-        if 'url' not in config:
-            raise Exception('missing url attribute')
-        args['base_url'] = config['url']
+        args['base_url'] = ''
+        if 'url' in config:
+            args['base_url'] = config['url']
         if 'extra' in config:
             args.update(config['extra'])
         p, m = storage_type.rsplit('.', 1)
@@ -364,6 +384,35 @@ class StorageFileModelBase(ThumbnailMixin):
         except Exception:
             pass
         return modified
+
+    def file_url(self, request=None):
+        if self.file:
+            storage_config = getattr(self, 'storage_config')
+            if 'url' in storage_config:
+                url = urljoin(storage_config['url'], self.name)
+                if request and (not(url.lower().startswith('http://') or url.lower().startswith('https://'))):
+                    url = self.context['request'].build_absolute_uri(url)
+            else:
+                name = 'filemanager_storage_url'
+                url = reverse(name, args=(storage_config['code'], self.name))
+            if request:
+                url = request.build_absolute_uri(url)
+            return url
+
+    def thumbnail_url(self, request=None):
+        storage_config = getattr(self, 'storage_config')
+        if self.thumbnail and 'thumbnail' in storage_config:
+            storage_config = getattr(self, 'storage_config')
+            if 'url' in storage_config['thumbnail']:
+                url = urljoin(storage_config['thumbnail']['url'], self.thumbnail)
+                if request and (not(url.lower().startswith('http://') or url.lower().startswith('https://'))):
+                    url = request.build_absolute_uri(url)
+            else:
+                name = 'filemanager_storage_thumbnail_url'
+                url = reverse(name, args=(storage_config['code'], self.thumbnail))
+                if request:
+                    url = request.build_absolute_uri(url)
+            return url
 
 
 def create_storage_file_model(storage_config, auto_thumbnail=False):
