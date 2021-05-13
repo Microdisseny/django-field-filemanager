@@ -181,6 +181,8 @@ class DocumentModel(models.Model, ThumbnailMixin):
 
         try:
             rmdir(folder)
+        except FileNotFoundError as e:
+            logger.debug(e)
         except Exception as e:
             logger.warning(e)
 
