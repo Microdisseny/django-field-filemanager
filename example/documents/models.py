@@ -18,3 +18,13 @@ class Document(DocumentModel):
 
     class Meta:
         unique_together = (('name', 'folder'),)
+
+
+class Image(DocumentModel):
+    document_parent = "folder"
+    folder = models.ForeignKey(
+        Folder, null=False, blank=False, on_delete=models.CASCADE
+    )
+
+    class Meta:
+        unique_together = (("name", "folder"),)
