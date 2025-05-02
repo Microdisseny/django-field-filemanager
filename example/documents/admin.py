@@ -4,7 +4,7 @@ from django.contrib import admin
 
 from dj_field_filemanager.admin import FieldFilemanagerAdmin
 
-from .models import Document, Folder, Project
+from .models import Document, Folder, Image, Project
 
 
 class FolderInline(FieldFilemanagerAdmin, admin.StackedInline):
@@ -30,6 +30,10 @@ class FolderAdmin(FieldFilemanagerAdmin, admin.ModelAdmin):
     """
     list_display = ('id', 'name',)
     list_display_links = ('id', 'name',)
+    document_display_modes = {
+        'documents.Document': 'list',
+        'documents.Image': 'grid',
+    }
 
 
 @admin.register(Document)
@@ -39,6 +43,28 @@ class DocumentAdmin(admin.ModelAdmin):
     """
     list_display = ('id', 'name',)
     list_display_links = ('id', 'name',)
+
+    def save_model(self, request, obj, form, change):
+        if not obj.name:
+            obj.name = os.path.basename(obj.file.name)
+        super().save_model(request, obj, form, change)
+        obj.save_thumbnail()
+
+
+@admin.register(Image)
+class ImageAdmin(admin.ModelAdmin):
+    """
+    Admin to manage images
+    """
+
+    list_display = (
+        "id",
+        "name",
+    )
+    list_display_links = (
+        "id",
+        "name",
+    )
 
     def save_model(self, request, obj, form, change):
         if not obj.name:

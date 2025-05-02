@@ -33,11 +33,19 @@ class FieldFilemanagerAdminMixin:
                 filemanager_field = 'filemanager_%s' % model.replace('.', '_').lower()
                 parent = related_model.document_parent
 
-                def documents(obj):
+                def documents(obj, model=model, parent=parent):
                     content = 'To add documents, save first'
                     if obj and obj.pk:
+                        display_modes = getattr(self, 'document_display_modes', {})
+                        display_mode = display_modes.get(model, "list")
                         documents_input = FieldFilemanagerWidget(
-                            attrs={'model': model, 'parent': parent, 'parent_pk': obj.pk})
+                            attrs={
+                                'model': model,
+                                'parent': parent,
+                                'parent_pk': obj.pk,
+                                'display_mode': display_mode
+                            }
+                        )
                         content = documents_input.render(short_description, '')
                     return content
                 documents.allow_tags = True

@@ -17,14 +17,16 @@
       return cookieValue;
   }
 
-  var attach_filemanager = function(selector){
-    $(selector + ' filemanager').attr(
+  var attach_filemanager = function(element){
+    const $filemanager = $(element).find('filemanager');
+
+    $filemanager.attr(
       'v-bind:api-headers', "{'X-CSRFToken': '" + getCookie('csrftoken') + "'}")
 
     var FileManager = filemanager.default;
     Vue.component('filemanager', FileManager)
     new Vue({
-        el: selector,
+        el: $filemanager[0],
         components: {
           filemanager: FileManager
         }
@@ -33,7 +35,7 @@
 
   $(document).ready(function() {
     $('.filemanager_component').each(function(i, el){
-      attach_filemanager('#' + django.jQuery(el).attr('id'));
+      attach_filemanager(el);
     });
   });
 
