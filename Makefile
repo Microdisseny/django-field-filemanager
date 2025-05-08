@@ -26,3 +26,11 @@ generate_thumbnails:
 test:
 	docker run --rm -e LOCAL_USER_ID=${LOCAL_USER_ID} -e ENVIRONMENT_NAME=test -e PYTHONPATH=/app:/app/example -v ${PWD}:/app -ti microdisseny/django-field-filemanager /bin/bash \
 	    -c 'cd example && python3 manage.py test'
+
+makemessages:
+	docker run --rm -e LOCAL_USER_ID=${LOCAL_USER_ID} -e ENVIRONMENT_NAME=test -e PYTHONPATH=/app:/app/example -v ${PWD}:/app -ti microdisseny/django-field-filemanager /bin/bash \
+	    -c 'cd dj_field_filemanager && python3 ../example/manage.py makemessages --ignore=media --extension=html,py --locale=ca'
+
+compilemessages:
+	docker run --rm -e LOCAL_USER_ID=${LOCAL_USER_ID} -e ENVIRONMENT_NAME=test -e PYTHONPATH=/app:/app/example -v ${PWD}:/app -ti microdisseny/django-field-filemanager /bin/bash \
+	    -c 'cd dj_field_filemanager && python3 ../example/manage.py compilemessages'
