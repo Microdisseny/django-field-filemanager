@@ -15,9 +15,14 @@
 }
 
 .inline-related.inline-related [data-field-filemanager-style] .col2 h3,
-[data-field-filemanager-style] .col2 h3 {
+[data-field-filemanager-style] .col2 h3,
+[data-field-filemanager-style] .col2 p {
   margin-top: 5px;
   text-align: center;
+}
+
+[data-field-filemanager-style] .col2 p {
+  font-style: italic;
 }
 
 .inline-related.inline-related [data-field-filemanager-style] .col3 label,
