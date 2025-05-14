@@ -30,7 +30,7 @@ def _upload_to(instance, filename):
 
 class ThumbnailMixin:
     ALLOWED_IMAGE_FORMATS = ('JPEG', 'PNG')
-    ALLOWED_IMAGE_EXTENSIONS = ('.jpeg', '.jpg', '.jpg')
+    ALLOWED_IMAGE_EXTENSIONS = ('.jpeg', '.jpg', '.png')
     EXTENSIONS = {
         'JPEG': 'jpg',
         'PNG': 'png',
@@ -91,7 +91,7 @@ class ThumbnailMixin:
             except Exception:
                 pass
             size = (self.get_thumbnail_width(), self.get_thumbnail_height())
-            im.thumbnail(size, Image.ANTIALIAS)
+            im.thumbnail(size, Image.Resampling.LANCZOS)
             buffer = io.BytesIO()
             im.save(buffer, format=format)
 

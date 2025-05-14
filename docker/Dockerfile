@@ -1,4 +1,4 @@
-FROM microdisseny/py3-development
+FROM microdisseny/py3-development:ubuntu-22.04
 
 ENV PACKAGES 'poppler-utils'
 
