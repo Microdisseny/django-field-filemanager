@@ -8,7 +8,7 @@ from urllib.parse import urljoin
 from django.conf import settings as django_settings
 from django.core.files.base import ContentFile
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 
 import pdf2image
