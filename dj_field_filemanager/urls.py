@@ -8,8 +8,14 @@ storage_detail = StorageViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'}
 
 model_list = ModelViewSet.as_view({'get': 'list', 'post': 'create'})
 model_detail = ModelViewSet.as_view({'get': 'retrieve', 'delete': 'destroy'})
+model_reorder = ModelViewSet.as_view({'patch': 'reorder'})
 
 urlpatterns = [
+    re_path(
+        r'^(?P<model>[\w\.]+)/(?P<parent_field>[\w-]+)/(?P<parent_pk>[\d]+)/(?P<pk>.*)/set-order/$',
+        model_reorder,
+        name='model_view_reorder'
+    ),
     re_path(r'^(?P<model>[\w\.]+)/(?P<parent_field>[\w-]+)/(?P<parent_pk>[\d]+)/(?P<pk>.*)/$', model_detail,
             name='model_view_detail'),
     re_path(r'^(?P<model>[\w\.]+)/(?P<parent_field>[\w-]+)/(?P<parent_pk>[\d]+)/$', model_list,

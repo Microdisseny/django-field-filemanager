@@ -41,7 +41,7 @@ class DocumentAdmin(admin.ModelAdmin):
     """
     Admin for manage documents
     """
-    list_display = ('id', 'name',)
+    list_display = ('id', 'name', 'folder', 'order')
     list_display_links = ('id', 'name',)
 
     def save_model(self, request, obj, form, change):
@@ -57,14 +57,8 @@ class ImageAdmin(admin.ModelAdmin):
     Admin to manage images
     """
 
-    list_display = (
-        "id",
-        "name",
-    )
-    list_display_links = (
-        "id",
-        "name",
-    )
+    list_display = ('id', 'name', 'folder', 'order')
+    list_display_links = ('id', 'name',)
 
     def save_model(self, request, obj, form, change):
         if not obj.name:
