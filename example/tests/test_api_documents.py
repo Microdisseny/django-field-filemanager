@@ -101,3 +101,56 @@ class ApiDocumentsTests(APITestCase):
         f.close()
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_ordering_missing(self):
+        files = ['2210571.jpg', 'images.docx', 'rgba1px.png']
+        for file in files:
+            path = 'tests/files/%s' % file
+            f = open(path, 'rb')
+            document = Document()
+            document.folder = self.folder
+            document.name = file
+            document.file.save(name=document.name, content=File(f))
+            document.save()
+            f.close()
+
+        missing_orders = Document.objects.filter(folder=self.folder, order=0).count()
+        self.assertEqual(missing_orders, 3)
+
+        url = reverse('model_view_list', args=['documents.Document', 'folder', self.folder.pk])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        missing_orders = Document.objects.filter(folder=self.folder, order=0).count()
+        self.assertEqual(missing_orders, 0)
+
+    def test_set_order(self):
+        files = ['2210571.jpg', 'images.docx', 'rgba1px.png']
+        file_ids = []
+        for file in files:
+            path = 'tests/files/%s' % file
+            f = open(path, 'rb')
+            document = Document()
+            document.folder = self.folder
+            document.name = file
+            document.file.save(name=document.name, content=File(f))
+            document.save()
+            file_ids.append(document.pk)
+            f.close()
+
+        url = reverse('model_view_list', args=['documents.Document', 'folder', self.folder.pk])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        ordered_names = [item['name'] for item in response.data]
+        self.assertEqual(ordered_names, ['2210571.jpg', 'images.docx', 'rgba1px.png'])
+
+        url = reverse('model_view_reorder', args=['documents.Document', 'folder', self.folder.pk, file_ids[0]])
+        data = {'order': 2}
+        response = self.client.patch(url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        url = reverse('model_view_list', args=['documents.Document', 'folder', self.folder.pk])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        ordered_names = [item['name'] for item in response.data]
+        self.assertEqual(ordered_names, ['images.docx', '2210571.jpg', 'rgba1px.png'])

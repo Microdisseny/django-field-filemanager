@@ -3,10 +3,13 @@ from urllib.parse import unquote
 
 from django.apps import apps
 from django.conf import settings as django_settings
+from django.core.exceptions import FieldError
+from django.db import models
 
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.parsers import MultiPartParser
+from rest_framework.decorators import action
+from rest_framework.parsers import MultiPartParser, JSONParser
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
@@ -18,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 class ModelViewSet(ViewSet):
     serializer_class = None
-    parser_classes = (MultiPartParser,)
+    parser_classes = (MultiPartParser, JSONParser)
     permission_classes = settings.FIELD_FILEMANAGER_API_PERMISSIONS
     authentication_classes = (SessionAuthentication,)
 
@@ -51,6 +54,53 @@ class ModelViewSet(ViewSet):
         filter[self.parent_field] = self.parent_pk
         qs = self.model.objects.filter(**filter)
         return qs
+
+    @action(detail=True, methods=['patch'], url_path='set-order')
+    def reorder(self, request, pk=None):
+        """Reorder an item."""
+        items = self.get_queryset()
+        self._set_missing_order(items)
+        new_order = request.data.get("order")
+        try:
+            new_order = int(new_order)
+        except ValueError:
+            return Response(
+                {'error': 'Order must be an integer.'}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        item = items.get(pk=unquote(pk))
+        if new_order == item.order:
+            return Response({'status': 'no change'}, status=status.HTTP_200_OK)
+
+        if new_order > item.order:
+            # Moving down - decrement items in between
+            self.get_queryset().filter(
+                order__gt=item.order, order__lte=new_order
+            ).update(order=models.F('order') - 1)
+        else:
+            # Moving up - increment items in between
+            self.get_queryset().filter(
+                order__gte=new_order, order__lt=item.order
+            ).update(order=models.F("order") + 1)
+        item.order = new_order
+        item.save(update_fields=['order'])
+        return Response({'status': 'reordered'}, status=status.HTTP_200_OK)
+
+    def _set_missing_order(self, items):
+        if not items.filter(order=0).exists():
+            return
+
+        max_order = items.aggregate(models.Max("order"))["order__max"] or 0
+        # items_to_update = []
+        for item in items:
+            if item.order == 0:
+                max_order += 1
+                item.order = max_order
+                # items_to_update.append(item)
+                # ToDo: Upgrade Django version and use bulk_update instead of individual saves
+                item.save(update_fields=['order'])
+        # The next line requires Django 2.2+ (currently using 2.1.15)
+        # self.model.objects.bulk_update(items_to_update, ['order'])
 
     def create(self, request):
         data = request.data
@@ -87,6 +137,11 @@ class ModelViewSet(ViewSet):
 
     def list(self, request, *args, **kwargs):
         items = self.get_queryset()
+        try:
+            items = items.order_by('order')
+        except FieldError:
+            # If the model has no 'order' field, ignore the sorting
+            pass
         serializer = self.get_serializer(items, many=True, context={'request': request})
         return Response(serializer.data)
 
