@@ -114,14 +114,15 @@ class ApiDocumentsTests(APITestCase):
             document.save()
             f.close()
 
-        missing_orders = Document.objects.filter(folder=self.folder, order=0).count()
+        documents = Document.objects.filter(folder=self.folder)
+        missing_orders = documents.filter(order=0).count()
         self.assertEqual(missing_orders, 3)
 
-        url = reverse('model_view_list', args=['documents.Document', 'folder', self.folder.pk])
-        response = self.client.get(url)
+        url = reverse('model_view_reorder', args=['documents.Document', 'folder', self.folder.pk, documents[0].pk])
+        response = self.client.patch(url, {'order': 1}, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        missing_orders = Document.objects.filter(folder=self.folder, order=0).count()
+        missing_orders = documents.filter(order=0).count()
         self.assertEqual(missing_orders, 0)
 
     def test_set_order(self):

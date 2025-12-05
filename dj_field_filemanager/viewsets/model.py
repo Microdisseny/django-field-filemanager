@@ -55,7 +55,13 @@ class ModelViewSet(ViewSet):
         qs = self.model.objects.filter(**filter)
         return qs
 
-    @action(detail=True, methods=['patch'], url_path='set-order')
+    @action(
+        detail=True,
+        methods=['patch'],
+        url_path='set-order',
+        permission_classes=settings.FIELD_FILEMANAGER_API_PERMISSIONS,
+        authentication_classes=(SessionAuthentication,),
+    )
     def reorder(self, request, pk=None):
         """Reorder an item."""
         items = self.get_queryset()
@@ -63,7 +69,7 @@ class ModelViewSet(ViewSet):
         new_order = request.data.get("order")
         try:
             new_order = int(new_order)
-        except ValueError:
+        except (TypeError, ValueError):
             return Response(
                 {'error': 'Order must be an integer.'}, status=status.HTTP_400_BAD_REQUEST
             )
