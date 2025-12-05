@@ -11,7 +11,8 @@ class ModelHasPermission(BasePermission):
             'retrieve': 'view',
             # 'update': 'change',
             # 'partial_update': 'change',
-            'destroy': 'delete'
+            'destroy': 'delete',
+            'reorder': 'change',
         }
         if view.action not in permissions:
             return False
