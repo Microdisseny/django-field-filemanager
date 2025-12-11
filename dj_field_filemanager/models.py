@@ -117,6 +117,7 @@ class DocumentModel(ThumbnailMixin, models.Model, ):
     thumbnail = models.FileField(_('Thumbnail'), max_length=255, blank=True,
                                  null=True, upload_to=_thumbnail_upload_to,
                                  storage=settings.FIELD_FILEMANAGER_STORAGE())
+    order = models.PositiveSmallIntegerField(default=0)
 
     def get_file_name(self):
         if self.file:
