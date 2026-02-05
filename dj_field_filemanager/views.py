@@ -21,7 +21,7 @@ def _media_files_server(request, path):
     content_type = mimetypes.guess_type(
         fullpath)[0] or 'application/octet-stream'
     if not was_modified_since(request.META.get('HTTP_IF_MODIFIED_SINCE'),
-                              statobj[stat.ST_MTIME], statobj[stat.ST_SIZE]):
+                              statobj[stat.ST_MTIME]):
         return HttpResponseNotModified(content_type=content_type)
     # FIXME: use FileResponse instead https://docs.djangoproject.com/en/3.0/ref/request-response/
     response = HttpResponse(
